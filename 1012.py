@@ -1,28 +1,38 @@
-t = int(input())
-dx = [1, -1, 0, 0]
+def dfs(x, y):
+    visited[x][y] = 1
+    global cnt
+    # 배추가 있으면 1 카운트
+    if farm[x][y] == 1:
+        cnt += 1
+    # 해당 위치에서 좌/우/위/아래 방향의 좌표를 확인해서 dfs 적용
+    for i in range(4):
+        nx = x + dx[i]
+        ny = y + dy[i]
+        if 0 <= nx < M and 0 <= ny < N:
+            if visited[nx][ny] == 0 and farm[nx][ny] == 1:
+                dfs(nx, ny)
+                
+                
+# 방향 확인을 위한 좌표 dx와 dy
+# 중앙을 기준으로 좌/우/위/아래
+dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
-def bfs(y, x):
-    queue = [[y, x]]
-    while queue:
-        a, b = queue[0][0], queue[0][1]
-        del queue[0]
-        for i in range(4):
-            q = a + dy[i]
-            w = b + dx[i]
-            if 0 <= q < n and 0 <= w < m and s[q][w] == 1:
-                s[q][w] = 0
-                queue.append([q, w])
-for i in range(t):
-    m, n, k = map(int, input().split())
-    s = [[0] * m for i in range(n)]
+                            
+T = int(input())
+for i in range(T):
+    M, N, K = list(map(int, input().split()))
+    farm = [[0] * N for _ in range(M)]
+    visited = [[0] * N for _ in range(M)]
+    for j in range(K):
+        x, y = list(map(int, input().split()))
+        farm[x][y] = 1
     cnt = 0
-    for j in range(k):
-        a, b = map(int, input().split())
-        s[b][a] = 1
-    for q in range(n):
-        for w in range(m):
-            if s[q][w] == 1:
-                bfs(q, w)
-                s[q][w] = 0
-                cnt += 1
-    print(cnt)
+    cnt_list = []
+    
+    for i in range(M):
+        for j in range(N):
+            if farm[i][j] == 1 and visited[i][j] == 0:
+                dfs(i, j)
+                cnt_list.append(cnt)
+                cnt = 0
+    print(len(cnt_list))
